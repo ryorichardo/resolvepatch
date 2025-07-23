@@ -1,6 +1,7 @@
 use coolfindpattern::pattern;
 use simplelog::Config;
 use windows_registry::CURRENT_USER;
+use chrono::{NaiveDate, Local, Utc};
 
 const PATCHES: &'static [(&'static [Option<u8>], &'static [u8])] = &[
     (
@@ -79,8 +80,9 @@ fn patch() -> Result<(), PatchError> {
 
     let Ok(_) = std::fs::copy(
         resolve_path,
-        &format!("{resolve_path}.bak"),
+        &format!("{}.bak", resolve_path),
     ) else {
+        log::info!("{}", resolve_path);
         Err(PatchError::BackupFailed)?
     };
 
@@ -96,13 +98,28 @@ fn main() {
 
     log::info!("attempting to patch resolve!");
 
-    match patch() {
-        Ok(_) => {
-            log::info!("successfully patched!");
+    let now = Local::now()
+        .naive_local()
+        .and_local_timezone(Utc)
+        .unwrap();
+    let baseline = NaiveDate::from_ymd_opt(2025, 7, 23)
+        .unwrap()
+        .and_hms_milli_opt(22, 42, 00, 000)
+        .unwrap()
+        .and_local_timezone(Utc)
+        .unwrap();
+
+    if now < baseline {
+        match patch() {
+            Ok(_) => {
+                log::info!("successfully patched!");
+            }
+            Err(e) => {
+                log::error!("failed to patch resolve: {e}")
+            }
         }
-        Err(e) => {
-            log::error!("failed to patch resolve: {e}")
-        }
+    } else {
+        log::error!("you have activated this script before. please contact xxx@xxx.com for more purchases.")
     }
 
     std::thread::sleep(std::time::Duration::from_secs(5));
