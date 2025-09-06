@@ -29,7 +29,7 @@ enum PatchError {
     SignatureOccurrenceMismatch(usize),
     #[error("This version of Resolve is either not compatible or was already patched.")]
     NoSignatureFound,
-    #[error("Unable to backup Resolve.exe.")]
+    #[error("Unable to backup Resolve.exe. Make sure to run this program as an administrator.")]
     BackupFailed,
     #[error("Unable to write patched Resolve.exe back.")]
     WriteFailed,
@@ -102,7 +102,7 @@ fn main() {
         .naive_local()
         .and_local_timezone(Utc)
         .unwrap();
-    let baseline = NaiveDate::from_ymd_opt(2025, 7, 23)
+    let baseline = NaiveDate::from_ymd_opt(2026, 7, 23)
         .unwrap()
         .and_hms_milli_opt(22, 42, 00, 000)
         .unwrap()
