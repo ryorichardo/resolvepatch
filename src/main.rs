@@ -1,6 +1,6 @@
 use coolfindpattern::pattern;
 use simplelog::Config;
-use windows_registry::CURRENT_USER;
+use windows_registry::{LOCAL_MACHINE, CURRENT_USER};
 use chrono::{NaiveDate, Local, Utc};
 
 const PATCHES: &'static [(&'static [Option<u8>], &'static [u8])] = &[
@@ -36,7 +36,9 @@ enum PatchError {
 }
 
 fn patch() -> Result<(), PatchError> {
-    let key = CURRENT_USER.open(r#"Software\Classes\ResolveBinFile\shell\open\command"#).map_err(|e| {
+    let key = CURRENT_USER.open(r#"Software\Classes\ResolveBinFile\shell\open\command"#)
+        .or_else(|_| LOCAL_MACHINE.open(r#"Software\Classes\ResolveBinFile\shell\open\command"#))
+        .map_err(|e| {
         log::error!("read registry key error: {e:#?}");
         PatchError::ResolveNotFound
     })?.get_string("").map_err(|e| {
