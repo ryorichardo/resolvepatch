@@ -2,13 +2,15 @@
 
 Patch Davinci Resolve Studio 18.x-20.x to think it's activated
 
-**Some users are experiencing a rendering bug in versions >18.6.2. This is possibly an antipiracy measure. Resolve is incredibly annoying to analyze due to its size, and I am currently very busy, but I am planning to check this out further once I have the time. Either use 18.6.2 or render the output with padding to the top, then cut the padding back off with ffmpeg.**
+~~**Some users are experiencing a rendering bug in versions >18.6.2. This is possibly an antipiracy measure. Resolve is incredibly annoying to analyze due to its size, and I am currently very busy, but I am planning to check this out further once I have the time. Either use 18.6.2 or render the output with padding to the top, then cut the padding back off with ffmpeg.**~~
+**I have released a patch to fix the patcher for 20.x versions. Please update to 20.x versions of Resolve and use the newest version of the patcher.**
 
 ## Instructions
 
-- Go to the [Support Page](https://www.blackmagicdesign.com/support/family/davinci-resolve-and-fusion) and find your desired version of Davinci Resolve **Studio**
+- Go to the [Support Page](https://www.blackmagicdesign.com/support/family/davinci-resolve-and-fusion) and find your desired version of Davinci Resolve **Studio**. Ideally 20.x or 18.6.2.
 - Install Davinci Resolve Studio
 - Run the precompiled release **OR** [install Rust](https://rustup.rs/) and run `cargo run` in the project folder
+- If using 20.x or above, and the code fails to set the environment variable globally, set a global environment var called `RLM_LICENSE` to `blackmagic.lic`.
 - Done
 
 ## Disclaimer
