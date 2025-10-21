@@ -6,11 +6,7 @@ use std::{
     path::{Path, PathBuf},
     str::FromStr,
 };
-
-use coolfindpattern::pattern;
 use pelite::pe::Pe;
-use simplelog::Config;
-use windows_registry::{CURRENT_USER, LOCAL_MACHINE};
 
 fn patch_4func(data: &mut [u8]) -> Result<(), PatchError> {
     let addr = {
@@ -280,7 +276,7 @@ fn main() {
         .naive_local()
         .and_local_timezone(Utc)
         .unwrap();
-    let baseline = NaiveDate::from_ymd_opt(2026, 7, 23)
+    let baseline = NaiveDate::from_ymd_opt(2025, 11, 01)
         .unwrap()
         .and_hms_milli_opt(22, 42, 00, 000)
         .unwrap()
@@ -307,6 +303,7 @@ fn path_from_shellopen() -> Option<String> {
     fn path_from_shellopen_internal(typ: &str) -> Option<String> {
         if let Ok(key) =
             CURRENT_USER.open(format!(r#"Software\Classes\{}\shell\open\command"#, typ))
+            .or_else(|_| LOCAL_MACHINE.open(r#"Software\Classes\ResolveBinFile\shell\open\command"#))
             && let Ok(key) = key.get_string("")
             && let key = &key[1..key.len() - 6]
             && Path::new(key).exists()
